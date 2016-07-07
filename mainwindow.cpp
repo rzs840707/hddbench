@@ -70,6 +70,8 @@ void MainWindow::on_inputOutFile_textChanged(const QString &arg1)
 
 void MainWindow::on_inputWrite_clicked()
 {
+    this->ui->centralWidget->setDisabled(true);
+
     this->ui->output->appendPlainText("--------------------------------------------------");
     this->ui->output->appendPlainText(QString("Starting benchmark: ") + QString::number(this->ui->inputCount->value()) + QString(" chunks at ") + QString::number(this->ui->inputSize->value()) + " MiB each");
     this->ui->output->appendPlainText("--------------------------------------------------");
@@ -148,6 +150,8 @@ void MainWindow::on_inputWrite_clicked()
     qApp->processEvents();
     this->ui->output->appendPlainText("");
     this->ui->output->appendPlainText("Ready.");
+
+    this->ui->centralWidget->setDisabled(false);
 }
 
 void MainWindow::on_inputSaveLog_clicked()
