@@ -91,7 +91,9 @@ void MainWindow::on_inputWrite_clicked()
     {
         // Open stream and write first byte
         timer.start();
-        std::fstream out(outfile.c_str(), std::fstream::out|std::fstream::binary|std::fstream::trunc);
+        std::fstream out;
+        out.rdbuf()->pubsetbuf(0,0);
+        out.open(outfile.c_str(), std::fstream::out|std::fstream::binary|std::fstream::trunc);
         out.write("\0", 1);
         out.flush();
         out.sync();
@@ -101,6 +103,7 @@ void MainWindow::on_inputWrite_clicked()
         if(out.fail())
         {
             this->ui->output->appendPlainText("ERROR: Failed to open file for writing!");
+            this->ui->centralWidget->setDisabled(false);
             return;
         }
         else
@@ -124,6 +127,7 @@ void MainWindow::on_inputWrite_clicked()
             if(out.fail())
             {
                 this->ui->output->appendPlainText("ERROR: Write fail on chunk #" + QString::number(i));
+                this->ui->centralWidget->setDisabled(false);
                 return;
             }
             else
@@ -137,6 +141,63 @@ void MainWindow::on_inputWrite_clicked()
         // Close writer
         out.close();
     }
+
+
+    // Read benchmark
+    {
+        // Open stream and read first byte
+        timer.start();
+        std::fstream in;
+        in.rdbuf()->pubsetbuf(0,0);
+        in.open(outfile.c_str(), std::fstream::in|std::fstream::binary);
+        in.read(chunk, 1);
+        in.flush();
+        in.sync();
+        time = timer.nsecsElapsed();
+
+        // Notify and return if we failed
+        if(in.fail())
+        {
+            this->ui->output->appendPlainText("ERROR: Failed to open file for reading!");
+            this->ui->centralWidget->setDisabled(false);
+            return;
+        }
+        else
+        {
+            this->ui->output->appendPlainText(QString::number(double(time) / double(1000000.0)) + QString(" ms \t First byte read"));
+        }
+        qApp->processEvents();
+
+        // Read chunks
+        for(int i = 0; i < this->ui->inputCount->value(); i++)
+        {
+            in.flush();
+            in.sync();
+
+            timer.restart();
+            in.read(chunk, sizeBytes);
+            in.flush();
+            in.sync();
+            time = timer.elapsed();
+
+            if(in.bad())
+            {
+                this->ui->output->appendPlainText("ERROR: Read fail on chunk #" + QString::number(i));
+                this->ui->centralWidget->setDisabled(false);
+                return;
+            }
+            else
+            {
+                double mibs = ((double(sizeBytes)/1024.0)/1024.0) / (double(time) * 0.001);
+                this->ui->output->appendPlainText(QString::number(time) + QString(" ms \t Chunk #") + QString::number(i) + QString(" read @ ") + QString::number(mibs, 'f', 2) + QString(" MiB/s"));
+            }
+            qApp->processEvents();
+        }
+
+        // Close writer
+        in.close();
+    }
+
 
     // Delete chunkdata
     this->ui->output->appendPlainText("Deleting chunkdata");
