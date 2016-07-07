@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>406</width>
-    <height>469</height>
+    <width>610</width>
+    <height>584</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_6">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <widget class="QGroupBox" name="groupBox_3">
       <property name="title">
@@ -24,7 +24,7 @@
        <item>
         <widget class="QLabel" name="label_4">
          <property name="text">
-          <string>Select the directory where the temporary files will be written. This location dictates the storage media to be used for the benchmark.</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the directory where the temporary files will be written. This location dictates the storage device to be used for the benchmark.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="scaledContents">
           <bool>false</bool>
@@ -73,79 +73,109 @@
       <property name="title">
        <string>Settings</string>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="label_5">
          <property name="text">
-          <string>Read/Write </string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the &lt;span style=&quot; font-style:italic;&quot;&gt;number of chunks&lt;/span&gt; and the &lt;span style=&quot; font-style:italic;&quot;&gt;chunksize&lt;/span&gt; to write. Make sure you have enough memory and free space on your storage device before you begin.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="inputCount">
-         <property name="suffix">
-          <string> chunks</string>
-         </property>
-         <property name="value">
-          <number>8</number>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string> at </string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="inputSize">
-         <property name="suffix">
-          <string> MiB</string>
-         </property>
-         <property name="minimum">
-          <double>1.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>4096.000000000000000</double>
-         </property>
-         <property name="singleStep">
-          <double>256.000000000000000</double>
-         </property>
-         <property name="value">
-          <double>512.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string> each</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="inputWrite">
-         <property name="enabled">
+         <property name="wordWrap">
           <bool>true</bool>
          </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="noticeReq">
          <property name="text">
-          <string>Begin</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;These settings will require 4096.00 MiB free space and 512.00 MiB free memory.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
          </property>
         </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Read/Write </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="inputCount">
+           <property name="suffix">
+            <string> chunks</string>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>32</number>
+           </property>
+           <property name="value">
+            <number>8</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string> at </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="inputSize">
+           <property name="suffix">
+            <string> MiB</string>
+           </property>
+           <property name="minimum">
+            <double>128.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>4096.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>128.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>512.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string> each</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="inputWrite">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Begin</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

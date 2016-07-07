@@ -24,6 +24,10 @@ private slots:
 
     void on_inputSaveLog_clicked();
 
+    void on_inputCount_valueChanged(int arg1);
+
+    void on_inputSize_valueChanged(double arg1);
+
 private:
     void assertOutputDir();
 

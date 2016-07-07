@@ -186,3 +186,17 @@ void MainWindow::on_inputSaveLog_clicked()
     }
     f.close();
 }
+
+void MainWindow::on_inputCount_valueChanged(int arg1)
+{
+    double chunkSize = this->ui->inputSize->value();
+    double chunkCount = arg1;
+    this->ui->noticeReq->setText(QString("These settings will require ") + QString::number( chunkSize*chunkCount , 'f', 2) + QString(" MiB free space and ") +  QString::number( chunkSize , 'f', 2) + QString(" MiB free memory."));
+}
+
+void MainWindow::on_inputSize_valueChanged(double arg1)
+{
+    double chunkSize = arg1;
+    double chunkCount = this->ui->inputCount->value();
+    this->ui->noticeReq->setText(QString("These settings will require ") + QString::number( chunkSize*chunkCount , 'f', 2) + QString(" MiB free space and ") +  QString::number( chunkSize , 'f', 2) + QString(" MiB free memory."));
+}
