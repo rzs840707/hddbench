@@ -3,6 +3,7 @@
 
 #include <QFileDialog>
 #include <QElapsedTimer>
+#include <QMessageBox>
 #include <fstream>
 #include <cinttypes>
 
@@ -147,4 +148,34 @@ void MainWindow::on_inputWrite_clicked()
     qApp->processEvents();
     this->ui->output->appendPlainText("");
     this->ui->output->appendPlainText("Ready.");
+}
+
+void MainWindow::on_inputSaveLog_clicked()
+{
+    static QString logFile = QString(BASEDIR) + "hddbench-output.txt";
+    logFile = QFileDialog::getSaveFileName(this, tr("Save log"), logFile, tr("Log files (*.txt *.log)"));
+    if(logFile.size() == 0)
+    {
+        return;
+    }
+
+    std::fstream f(logFile.toStdString().c_str(), std::fstream::out|std::fstream::trunc);
+    if(!f)
+    {
+       QMessageBox::information(this, "Error", "Failed to open log file for writing");
+       f.close();
+       return;
+    }
+
+    f << this->ui->output->toPlainText().toStdString().c_str();
+
+    if(f.fail())
+    {
+        QMessageBox::information(this, "Error", "Couldn't write log to file");
+    }
+    else
+    {
+        QMessageBox::information(this, "Success", "Log file saved!");
+    }
+    f.close();
 }

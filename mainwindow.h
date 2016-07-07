@@ -22,6 +22,8 @@ private slots:
 
     void on_inputWrite_clicked();
 
+    void on_inputSaveLog_clicked();
+
 private:
     void assertOutputDir();
 
