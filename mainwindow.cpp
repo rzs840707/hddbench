@@ -77,71 +77,74 @@ void MainWindow::on_inputWrite_clicked()
     this->ui->output->appendPlainText("--------------------------------------------------");
 
     std::vector<qint64> writeTimes;
-    QElapsedTimer timer;
-    qint64 time;
+    QElapsedTimer       timer;
+    qint64              time        = 0;
+    std::string         outfile     = this->ui->inputOutFile->text().toStdString() + "/tmp";
+    uint64_t            sizeBytes   = double((this->ui->inputSize->value() * 1024.0) * 1024.0);
 
-    std::string outfile = this->ui->inputOutFile->text().toStdString() + "/tmp";
-
-    // Open stream and write first byte
-    timer.start();
-    std::fstream out(outfile.c_str(), std::fstream::out|std::fstream::binary|std::fstream::trunc);
-    out.write("\0", 1);
-    out.flush();
-    out.sync();
-    time = timer.nsecsElapsed();
-
-
-    // Notify and return if we failed
-    if(out.fail())
-    {
-        this->ui->output->appendPlainText("ERROR: Failed to open file for writing!");
-        return;
-    }
-    else
-    {
-        this->ui->output->appendPlainText(QString::number(double(time) / double(1000000.0)) + QString(" ms \t First byte written"));
-    }
-
-
-    // Allocate write data
-    uint64_t sizeBytes = double((this->ui->inputSize->value() * 1024.0) * 1024.0);
-    this->ui->output->appendPlainText(QString("Allocating chunkdata (actual size is ") + QString::number(sizeBytes) + QString(" bytes)"));
-    qApp->processEvents();
+    // Allocate chunk data
     char * chunk = new char[sizeBytes];
-
-    this->ui->output->appendPlainText("Writing chunks ...");
+    this->ui->output->appendPlainText(QString("Allocated chunkdata (actual size is ") + QString::number(sizeBytes) + QString(" bytes)"));
     qApp->processEvents();
-    for(int i = 0; i < this->ui->inputCount->value(); i++)
+
+    // Write benchmark
     {
+        // Open stream and write first byte
+        timer.start();
+        std::fstream out(outfile.c_str(), std::fstream::out|std::fstream::binary|std::fstream::trunc);
+        out.write("\0", 1);
         out.flush();
         out.sync();
+        time = timer.nsecsElapsed();
 
-        timer.restart();
-        out.write(chunk, sizeBytes);
-        out.flush();
-        out.sync();
-        time = timer.elapsed();
-
+        // Notify and return if we failed
         if(out.fail())
         {
-            this->ui->output->appendPlainText("ERROR: Write fail on chunk #" + QString::number(i));
+            this->ui->output->appendPlainText("ERROR: Failed to open file for writing!");
             return;
         }
         else
         {
-            double mibs = ((double(sizeBytes)/1024.0)/1024.0) / (double(time) * 0.001);
-            this->ui->output->appendPlainText(QString::number(time) + QString(" ms \t Chunk #") + QString::number(i) + QString(" written @ ") + QString::number(mibs, 'f', 2) + QString(" MiB/s"));
+            this->ui->output->appendPlainText(QString::number(double(time) / double(1000000.0)) + QString(" ms \t First byte written"));
         }
         qApp->processEvents();
+
+        // Write chunks
+        for(int i = 0; i < this->ui->inputCount->value(); i++)
+        {
+            out.flush();
+            out.sync();
+
+            timer.restart();
+            out.write(chunk, sizeBytes);
+            out.flush();
+            out.sync();
+            time = timer.elapsed();
+
+            if(out.fail())
+            {
+                this->ui->output->appendPlainText("ERROR: Write fail on chunk #" + QString::number(i));
+                return;
+            }
+            else
+            {
+                double mibs = ((double(sizeBytes)/1024.0)/1024.0) / (double(time) * 0.001);
+                this->ui->output->appendPlainText(QString::number(time) + QString(" ms \t Chunk #") + QString::number(i) + QString(" written @ ") + QString::number(mibs, 'f', 2) + QString(" MiB/s"));
+            }
+            qApp->processEvents();
+        }
+
+        // Close writer
+        out.close();
     }
 
-
+    // Delete chunkdata
     this->ui->output->appendPlainText("Deleting chunkdata");
     delete[] chunk;
     qApp->processEvents();
 
+    // Cleanup
     this->ui->output->appendPlainText("Cleaning up");
-    out.close();
     QFile f(outfile.c_str());
     if(!f.remove())
     {
