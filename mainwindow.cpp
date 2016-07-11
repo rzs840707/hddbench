@@ -12,7 +12,7 @@
 #elif __unix__
     #define BASEDIR "/"
 #else
-    define BASEDIR ""
+    #define BASEDIR ""
 #endif
 
 MainWindow::MainWindow(QWidget *parent) :
